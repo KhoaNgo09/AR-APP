@@ -29,7 +29,7 @@ import torch
 import gdown
 
 # Tải model từ Google Drive hoặc URL nếu file quá lớn
-url = "https://huggingface.co/ultralytics/yolov8m/resolve/main/yolov8m.pt"
+url = "https://huggingface.co/ultralytics/yolov8/resolve/main/yolov8m.pt"
 gdown.download(url, "yolov8m.pt", quiet=False)
 
 # Load model
@@ -96,4 +96,5 @@ webrtc_streamer(
     media_stream_constraints={"video": True, "audio": False},
     async_processing=True
 )
+
 
