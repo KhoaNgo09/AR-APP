@@ -5,4 +5,6 @@ opencv-python-headless
 Pillow
 numpy
 rich
+# AV (Audio/Video) cho streamlit-webrtc
+av==10.0.0
 
