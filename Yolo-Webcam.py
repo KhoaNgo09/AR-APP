@@ -5,7 +5,7 @@ import numpy as np
 from PIL import Image, ImageFont, ImageDraw
 import streamlit as st
 from ultralytics import YOLO
-from streamlit_webrtc import VideoTransformerBase, webrtc_streamer
+from streamlit_webrtc import VideoProcessorBase, webrtc_streamer
 
 # -----------------------------
 # Hàm vẽ text tiếng Việt
@@ -49,12 +49,21 @@ classNames = [
 ]
 
 # -----------------------------
+# Cấu hình WebRTC
+RTC_CONFIGURATION = {
+    "iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]
+}
+
+# -----------------------------
 # Video transformer xử lý YOLO realtime
-class YOLOVideoTransformer(VideoTransformerBase):
-    def transform(self, frame):
+class YOLOVideoTransformer(VideoProcessorBase):
+    def __init__(self):
+        self.model = model
+
+    def recv(self, frame):
         img = frame.to_ndarray(format="bgr24")
 
-        results = model(img, stream=True)
+        results = self.model(img, stream=True)
         for r in results:
             boxes = r.boxes
             if boxes is None or len(boxes) == 0:
@@ -84,9 +93,8 @@ st.title("YOLOv8 + Webcam Realtime trên Streamlit")
 
 webrtc_streamer(
     key="example",
-    video_processor_factory=VideoTransformer,  # Thay video_transformer_factory bằng video_processor_factory
+    video_processor_factory=YOLOVideoTransformer,  # <-- Sửa ở đây
     rtc_configuration=RTC_CONFIGURATION,
     media_stream_constraints={"video": True, "audio": False},
     async_processing=True,
 )
-
