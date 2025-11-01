@@ -25,7 +25,15 @@ def draw_vietnamese_text(img, text, position, font_size=24, color=(255,0,255)):
 
 # -----------------------------
 # Load YOLOv8 model
-model = YOLO("yolov8m.pt")  # hoặc yolov8n.pt, yolov8s.pt tùy nhu cầu
+import torch
+import gdown
+
+# Tải model từ Google Drive hoặc URL nếu file quá lớn
+url = "https://huggingface.co/ultralytics/yolov8m/resolve/main/yolov8m.pt"
+gdown.download(url, "yolov8m.pt", quiet=False)
+
+# Load model
+model = YOLO("yolov8m.pt")
 
 # -----------------------------
 # Class names COCO với nhãn tiếng Việt
@@ -88,3 +96,4 @@ webrtc_streamer(
     media_stream_constraints={"video": True, "audio": False},
     async_processing=True
 )
+
