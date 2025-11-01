@@ -83,7 +83,10 @@ class YOLOVideoTransformer(VideoTransformerBase):
 st.title("YOLOv8 + Webcam Realtime trên Streamlit")
 
 webrtc_streamer(
-    key="yolo-webcam",
-    video_transformer_factory=YOLOVideoTransformer,
+    key="example",
+    video_processor_factory=VideoTransformer,  # Thay video_transformer_factory bằng video_processor_factory
+    rtc_configuration=RTC_CONFIGURATION,
     media_stream_constraints={"video": True, "audio": False},
+    async_processing=True,
 )
+
