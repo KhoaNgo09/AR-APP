@@ -91,10 +91,44 @@ class YOLOVideoTransformer(VideoProcessorBase):
 # Streamlit UI
 st.title("YOLOv8 + Webcam Realtime trên Streamlit")
 
-webrtc_streamer(
-    key="example",
-    video_processor_factory=YOLOVideoTransformer,  # <-- Sửa ở đây
-    rtc_configuration=RTC_CONFIGURATION,
-    media_stream_constraints={"video": True, "audio": False},
-    async_processing=True,
+from streamlit_webrtc import webrtc_streamer, RTCConfiguration
+
+class VideoProcessor:
+    """
+    A class to process video frames, specifically for face detection 
+    and drawing bounding boxes.
+    """
+    def recv(self, frame):
+        """
+        Receives an AVFrame, processes it, and returns a new AVFrame.
+        """
+        # Convert AVFrame to a NumPy array (BGR format)
+        frm = frame.to_ndarray(format="bgr24")
+        
+        # Convert to grayscale for face detection
+        gray = cv2.cvtColor(frm, cv2.COLOR_BGR2GRAY)
+        
+        # Detect faces
+        # The parameters (1.1, 3) are scale factor and minimum neighbors
+        faces = cascade.detectMultiScale(gray, 1.1, 3)
+        
+        # Draw a rectangle around each detected face
+        for x, y, w, h in faces:
+            # (x, y) is the top-left corner, (x+w, y+h) is the bottom-right
+            # (0, 255, 0) is the color (Green in BGR), 3 is the line thickness
+            cv2.rectangle(frm, (x, y), (x + w, y + h), (0, 255, 0), 3)
+            
+        # Convert the processed NumPy array back to an AVFrame
+        return av.VideoFrame.from_ndarray(frm, format='bgr24')
+
+# WebRTC configuration using a public STUN server for NAT traversal
+RTC_CONFIGURATION = RTCConfiguration(
+    {"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]}
 )
+
+# Initialize the WebRTC streamer in a Streamlit app
+# 'key' must be unique if multiple streamers are used
+webrtc_streamer(
+    key="video", 
+    video_processor_factory=VideoProcessor, 
+    rtc_configuration=RTC_CONFIGURATION
