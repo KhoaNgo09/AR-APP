@@ -1,17 +1,7 @@
-# Core
 streamlit==1.27.0
-streamlit-webrtc==0.66.0   # Phiên bản tương thích Python 3.11
-
-# YOLOv8
-ultralytics>=8.0.0
-
-# OpenCV và xử lý ảnh
-opencv-python-headless>=4.8.1
-Pillow>=10.0.0
-numpy>=1.25.0
-
-# Hỗ trợ text/console
-rich>=14.0.0
-markdown-it-py>=4.0.0
-mdurl>=0.1.2
-pygments>=2.19.0
+streamlit-webrtc==0.66.0
+ultralytics
+opencv-python-headless
+Pillow
+numpy
+rich
