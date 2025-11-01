@@ -12,8 +12,3 @@ opencv-python-headless==4.8.1.78
 pillow==10.0.1
 numpy==1.26.4
 
-# Pin các package phụ tránh xung đột
-rich==14.2.0
-markdown-it-py==4.0.0
-pygments==2.19.2
-mdurl==0.1.2
