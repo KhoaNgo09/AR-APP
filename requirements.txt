@@ -1,10 +1,17 @@
-streamlit==1.27.0
-streamlit-webrtc>=0.63.11
-ultralytics
-opencv-python-headless
-Pillow
-numpy
-rich
-# AV (Audio/Video) cho streamlit-webrtc
-av==10.0.0
+# Cài Streamlit
+pip install streamlit==1.27.0
 
+# Cài Streamlit-webrtc
+pip install streamlit-webrtc==0.32.0
+
+# Cài av cho Python 3.10
+pip install av==10.0.0
+
+# Cài OpenCV
+pip install opencv-python-headless==4.8.1.78
+
+# Cài YOLO Ultralytics
+pip install ultralytics==8.0.192
+
+# Cài các package hỗ trợ khác
+pip install numpy==1.26.4 pillow==10.1.0
