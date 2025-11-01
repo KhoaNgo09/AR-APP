@@ -1,4 +1,4 @@
-# Core packages
+# Streamlit và WebRTC
 streamlit==1.27.0
 streamlit-webrtc==0.67.0
 
@@ -8,11 +8,11 @@ ultralytics==8.4.2
 # OpenCV headless, tránh lỗi GUI trên Cloud
 opencv-python-headless==4.8.1.78
 
-# Image processing & drawing
+# Xử lý ảnh & vẽ text
 pillow==10.0.1
 numpy==1.26.4
 
-# Streamlit dependencies pin version để tránh xung đột
+# Pin các package phụ tránh xung đột
 rich==14.2.0
 markdown-it-py==4.0.0
 pygments==2.19.2
