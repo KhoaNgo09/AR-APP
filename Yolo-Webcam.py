@@ -27,7 +27,7 @@ cap.set(4, 720)
 
 # cap = cv2.VideoCapture("../Videos/ppe-2-1.mp4")
 
-model = YOLO("../Yolo-Weights/yolov8m.pt")
+model = YOLO("yolov8m.pt")
 
 classNames = [
     "Person - Con người", "Bicycle - Xe đạp", "Car - Ô tô", "Motorbike - Xe máy", "Aeroplane - Máy bay",
@@ -97,4 +97,5 @@ while True:
 
 
     cv2.imshow("Image", img)
+
     cv2.waitKey(1)
