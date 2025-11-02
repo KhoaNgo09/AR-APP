@@ -1,7 +1,8 @@
 streamlit
 ultralytics
 torch # PyTorch
-opencv-python
+opencv-python-headless
 pillow
 av
 streamlit-webrtc
+
