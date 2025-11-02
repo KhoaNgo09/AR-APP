@@ -5,4 +5,4 @@ opencv-python-headless
 pillow
 av
 # 🌟 FIX: Cập nhật lên phiên bản mới nhất để sửa lỗi ModuleNotFoundError
-streamlit-webrtc
+streamlit-webrtc==0.30.0
