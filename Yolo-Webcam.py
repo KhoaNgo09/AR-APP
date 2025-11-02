@@ -90,8 +90,18 @@ class YOLOVideoTransformer(VideoProcessorBase):
 
 # -----------------------------
 # WebRTC configuration
+# SỬA ĐỔI TRONG FILE Yolo-Webcam.py
+
+# WebRTC configuration
 RTC_CONFIGURATION = RTCConfiguration(
-    {"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]}
+    {"iceServers": [
+        # Máy chủ STUN chính
+        {"urls": ["stun:stun.l.google.com:19302"]},
+        # Thêm máy chủ STUN dự phòng
+        {"urls": ["stun:stun1.l.google.com:19302"]},
+        {"urls": ["stun:stun2.l.google.com:19302"]},
+        {"urls": ["stun:global.stun.twilio.com:3478"]}
+    ]}
 )
 
 webrtc_streamer(
@@ -102,3 +112,4 @@ webrtc_streamer(
     # 💡 FIX THREADING/TIMING: Loại bỏ async_processing=True
     # async_processing=True 
 )
+
