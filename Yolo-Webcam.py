@@ -13,22 +13,30 @@ st.title("YOLOv8 + Webcam Realtime với nhãn tiếng Việt")
 
 # -----------------------------
 # Hàm vẽ text tiếng Việt
+# CẦN ĐẢM BẢO TỆP FONT (VD: arial.ttf) ĐƯỢC ĐẶT TRONG THƯ MỤC DỰ ÁN
 def draw_vietnamese_text(img, text, position, font_size=24, color=(255,0,255)):
     img_pil = Image.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
     draw = ImageDraw.Draw(img_pil)
+    
+    # 🌟 FIX FONT: Sử dụng đường dẫn tương đối và thêm ngoại lệ kiểm tra
+    font_path = "arial.ttf" # <-- Thay đổi tên tệp font nếu cần
     try:
-        font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", font_size)
-    except:
+        font = ImageFont.truetype(font_path, font_size)
+    except IOError:
+        # Nếu không tìm thấy font, sử dụng font mặc định (sẽ không hỗ trợ tiếng Việt)
+        print(f"Lỗi: Không tìm thấy tệp font tại {font_path}. Sử dụng font mặc định.")
         font = ImageFont.load_default()
+        
     draw.text(position, text, font=font, fill=color)
     return cv2.cvtColor(np.array(img_pil), cv2.COLOR_RGB2BGR)
 
 
 # Load model
+# Nếu 'yolov8m.pt' chưa tồn tại, thư viện ultralytics sẽ tự động tải (fix lỗi UnpicklingError cũ)
 model = YOLO("yolov8m.pt")
 
 # -----------------------------
-# Class names COCO với nhãn tiếng Việt
+# Class names COCO với nhãn tiếng Việt (Giữ nguyên)
 classNames = [
     "Person - Con người", "Bicycle - Xe đạp", "Car - Ô tô", "Motorbike - Xe máy", "Aeroplane - Máy bay",
     "Bus - Xe buýt", "Train - Tàu hỏa", "Truck - Xe tải", "Boat - Thuyền",
@@ -58,18 +66,27 @@ class YOLOVideoTransformer(VideoProcessorBase):
     def recv(self, frame: av.VideoFrame) -> av.VideoFrame:
         img = frame.to_ndarray(format="bgr24")
 
-        results = model(img, stream=True)
+        # 🌟 Tối ưu: Bỏ stream=True khi xử lý từng khung hình
+        # Sử dụng model.predict() cho rõ ràng hơn (hoặc model(img) cũng đúng)
+        results = model(img) 
+        
         for r in results:
             boxes = r.boxes
             if boxes is None or len(boxes) == 0:
                 continue
             for box in boxes:
+                # Chuyển đổi sang integer
                 x1, y1, x2, y2 = map(int, box.xyxy[0])
                 conf = float(box.conf[0])
+                
+                # Ngưỡng tin cậy
                 if conf < 0.5:
                     continue
+                    
                 cls = int(box.cls[0])
                 label = f"{classNames[cls]} {conf:.2f}"
+                
+                # Vẽ text và bounding box
                 img = draw_vietnamese_text(img, label, (x1, y1-25))
                 cv2.rectangle(img, (x1, y1), (x2, y2), (255,0,255), 2)
 
@@ -88,6 +105,3 @@ webrtc_streamer(
     media_stream_constraints={"video": True, "audio": False},
     async_processing=True
 )
-
-
-
