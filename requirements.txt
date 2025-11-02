@@ -4,9 +4,10 @@ ultralytics
 opencv-python-headless # Hoặc opencv-python nếu bạn đã fix libGL
 pillow
 av
-streamlit-webrtc --upgrade
+streamlit-webrtc
 # Các thư viện này sẽ tự động được cập nhật khi bạn cập nhật streamlit-webrtc:
 aioice
 aiortc
+
 
 
