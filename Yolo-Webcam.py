@@ -23,14 +23,6 @@ def draw_vietnamese_text(img, text, position, font_size=24, color=(255,0,255)):
     draw.text(position, text, font=font, fill=color)
     return cv2.cvtColor(np.array(img_pil), cv2.COLOR_RGB2BGR)
 
-# -----------------------------
-# Load YOLOv8 model
-import torch
-import gdown
-
-# Tải model từ Google Drive hoặc URL nếu file quá lớn
-url = "https://huggingface.co/ultralytics/yolov8/resolve/main/yolov8m.pt"
-gdown.download(url, "yolov8m.pt", quiet=False)
 
 # Load model
 model = YOLO("yolov8m.pt")
@@ -96,5 +88,6 @@ webrtc_streamer(
     media_stream_constraints={"video": True, "audio": False},
     async_processing=True
 )
+
 
 
