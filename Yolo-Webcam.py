@@ -23,7 +23,6 @@ def draw_vietnamese_text(img, text, position, font_size=24, color=(255,0,255)):
     try:
         font = ImageFont.truetype(font_path, font_size)
     except IOError:
-        # Nếu không tìm thấy font, sử dụng font mặc định (sẽ không hỗ trợ tiếng Việt)
         print(f"Lỗi: Không tìm thấy tệp font tại {font_path}. Sử dụng font mặc định.")
         font = ImageFont.load_default()
         
@@ -32,8 +31,9 @@ def draw_vietnamese_text(img, text, position, font_size=24, color=(255,0,255)):
 
 
 # Load model
-# Nếu 'yolov8m.pt' chưa tồn tại, thư viện ultralytics sẽ tự động tải (fix lỗi UnpicklingError cũ)
-model = YOLO("yolov8m.pt")
+# 💡 FIX UNPICKLING: Tải bằng tên ("yolov8m") để buộc tải/cache bản sạch.
+# CŨNG GIÚP ĐẨY NHANH QUÁ TRÌNH KHỞI TẠO.
+model = YOLO("yolov8m")
 
 # -----------------------------
 # Class names COCO với nhãn tiếng Việt (Giữ nguyên)
@@ -66,8 +66,7 @@ class YOLOVideoTransformer(VideoProcessorBase):
     def recv(self, frame: av.VideoFrame) -> av.VideoFrame:
         img = frame.to_ndarray(format="bgr24")
 
-        # 🌟 Tối ưu: Bỏ stream=True khi xử lý từng khung hình
-        # Sử dụng model.predict() cho rõ ràng hơn (hoặc model(img) cũng đúng)
+        # Sử dụng model(img) để dự đoán
         results = model(img) 
         
         for r in results:
@@ -75,18 +74,15 @@ class YOLOVideoTransformer(VideoProcessorBase):
             if boxes is None or len(boxes) == 0:
                 continue
             for box in boxes:
-                # Chuyển đổi sang integer
                 x1, y1, x2, y2 = map(int, box.xyxy[0])
                 conf = float(box.conf[0])
                 
-                # Ngưỡng tin cậy
                 if conf < 0.5:
                     continue
                     
                 cls = int(box.cls[0])
                 label = f"{classNames[cls]} {conf:.2f}"
                 
-                # Vẽ text và bounding box
                 img = draw_vietnamese_text(img, label, (x1, y1-25))
                 cv2.rectangle(img, (x1, y1), (x2, y2), (255,0,255), 2)
 
@@ -103,5 +99,6 @@ webrtc_streamer(
     video_processor_factory=YOLOVideoTransformer,
     rtc_configuration=RTC_CONFIGURATION,
     media_stream_constraints={"video": True, "audio": False},
-    async_processing=True
+    # 💡 FIX THREADING/TIMING: Loại bỏ async_processing=True
+    # async_processing=True 
 )
